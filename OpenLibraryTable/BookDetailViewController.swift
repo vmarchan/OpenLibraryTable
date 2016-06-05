@@ -12,7 +12,7 @@ class BookDetailViewController: UIViewController {
 
     @IBOutlet var imgBook: UIImageView!
     @IBOutlet var bookTitle: UILabel!
-    @IBOutlet var authorTitle: UILabel!
+    @IBOutlet var isbnCode: UILabel!
     @IBOutlet var bookAuthor: UILabel!
     @IBOutlet var errorText: UILabel!
     
@@ -46,7 +46,7 @@ class BookDetailViewController: UIViewController {
             self.imgBook.hidden = false
             self.bookTitle.hidden = false
             self.bookAuthor.hidden = false
-            self.authorTitle.hidden = false
+            self.isbnCode.hidden = false
             self.errorText.hidden = true
             
             self.imgBook.image = libro.img_url
@@ -58,14 +58,14 @@ class BookDetailViewController: UIViewController {
                 } else {
                     self.bookAuthor.text = "\(self.bookAuthor.text), \(name)"
                 }
-                
             }
+            self.isbnCode.text = self.libro.isbn
         } else {
             //hide all information and show error
             self.imgBook.hidden = true
             self.bookTitle.hidden = true
             self.bookAuthor.hidden = true
-            self.authorTitle.hidden = true
+            self.isbnCode.hidden = true
             self.errorText.hidden = false
             
             self.errorText.text = self.libro.error
