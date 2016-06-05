@@ -37,6 +37,9 @@ class BookListViewController: UIViewController, UITableViewDelegate, UITableView
     var searchedBook : Bool = false
     var searchError : Bool = false
     var errorBook : Libro = Libro(isbn: "", titulo: "", autores: [], img_url: UIImage(), error: "")
+    var indexExistBook : Int?
+    var existsISBN : Bool = false
+    var isbnIndex: [String] = []
     
     
     override func viewDidLoad() {
@@ -57,6 +60,7 @@ class BookListViewController: UIViewController, UITableViewDelegate, UITableView
         super.viewWillAppear(animated)
         self.searchedBook = false
         self.searchError = false
+        self.existsISBN = false
         hideSearch()
     }
 
@@ -142,6 +146,13 @@ class BookListViewController: UIViewController, UITableViewDelegate, UITableView
                             if let key = self.textField.text {
                                 let bookKey = "ISBN:\(key)"
                                 
+                                if self.isbnIndex.contains(bookKey) {
+                                    self.indexExistBook = self.isbnIndex.indexOf(bookKey)
+                                    self.existsISBN = true
+                                } else {
+                                    self.isbnIndex.append(bookKey);
+                                }
+                                
                                 //Get context if ISBN code exists
                                 if let cont1 = cont[bookKey] as? NSDictionary {
                                     libro.isbn = bookKey
@@ -193,7 +204,9 @@ class BookListViewController: UIViewController, UITableViewDelegate, UITableView
                                     self.errorBook = libro
                                 }
                                 if ((libro.error.isEmpty)) {
-                                    self.books.append(libro)
+                                    if !self.existsISBN {
+                                        self.books.append(libro)
+                                    }
                                     self.searchedBook = true
                                 }
                                 self.performSegueWithIdentifier("BookDetailSegue", sender: self)
@@ -252,7 +265,11 @@ class BookListViewController: UIViewController, UITableViewDelegate, UITableView
             let bookDetailView = segue.destinationViewController as! BookDetailViewController
             
             if self.searchedBook {
-                bookDetailView.libro = self.books.last!
+                if self.existsISBN {
+                    bookDetailView.libro = self.books[self.indexExistBook!]
+                } else {
+                    bookDetailView.libro = self.books.last!
+                }
             } else {
                 let index = self.tableView.indexPathForSelectedRow
                 if !self.searchError {
